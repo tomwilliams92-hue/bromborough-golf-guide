@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#1c3a2a" />
+<title>Bromborough GC — Back-Tee Yardage Book</title>
+<meta name="description" content="Hole-by-hole strategy for Bromborough Golf Club off the back tees, mapped to Tom's carry yardages. Built for a round near level par." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper:#E8E0CE;        /* page parchment */
+    --paper-lift:#F4EEE0;   /* card surface */
+    --paper-deep:#DED4BE;
+    --ink:#21271F;          /* near-black, green-tinted */
+    --ink-soft:#4c5246;
+    --ink-faint:#7e8273;
+    --green:#1c3a2a;        /* deep forest */
+    --green-2:#2c5a3f;
+    --moss:#5e7e6a;         /* par-3 accent */
+    --gold:#a9772a;         /* par-4 accent */
+    --gold-soft:#c79a4a;
+    --forest:#1c3a2a;       /* par-5 accent */
+    --flag:#9b2b22;         /* danger / OB red */
+    --flag-tint:#f0e0d8;
+    --line:rgba(33,39,31,.16);
+    --line-soft:rgba(33,39,31,.09);
+    --shadow:0 1px 2px rgba(28,58,42,.10), 0 14px 30px -18px rgba(28,58,42,.40);
+    --shadow-lift:0 2px 6px rgba(28,58,42,.12), 0 28px 50px -24px rgba(28,58,42,.55);
+    --mono:"Space Mono", ui-monospace, Menlo, monospace;
+    --serif:"Fraunces", Georgia, serif;
+    --sans:"Hanken Grotesk", system-ui, sans-serif;
+    --maxw:1120px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-size:16px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+  /* parchment grain overlay */
+  body::after{
+    content:"";
+    position:fixed;inset:0;z-index:9999;pointer-events:none;
+    opacity:.04;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  a{color:inherit;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px;}
+
+  .mono{font-family:var(--mono);}
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:11.5px;
+    letter-spacing:.26em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    font-weight:700;
+  }
+
+  /* ---------- sticky nav ---------- */
+  .nav{
+    position:sticky;top:0;z-index:50;
+    backdrop-filter:saturate(1.2) blur(8px);
+    background:rgba(232,224,206,.82);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-in{
+    max-width:var(--maxw);margin:0 auto;padding:11px 22px;
+    display:flex;align-items:center;justify-content:space-between;gap:10px 14px;flex-wrap:wrap;
+  }
+  .nav-brand{font-family:var(--mono);font-size:12.5px;letter-spacing:.16em;font-weight:700;text-transform:uppercase;display:flex;align-items:center;gap:9px;}
+  .nav-brand .dot{width:9px;height:9px;border-radius:50%;background:var(--flag);box-shadow:0 0 0 3px rgba(155,43,34,.18);}
+  .nav-links{display:flex;gap:4px;flex-wrap:wrap;}
+  .nav-links a{
+    font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    text-decoration:none;color:var(--ink-soft);padding:6px 10px;border-radius:999px;
+    transition:background .2s ease, color .2s ease;
+  }
+  .nav-links a:hover,.nav-links a:focus-visible{background:rgba(28,58,42,.10);color:var(--green);outline:none;}
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative;overflow:hidden;
+    background:
+      repeating-radial-gradient(circle at 84% 16%, transparent 0 46px, rgba(244,238,224,.05) 46px 48px),
+      repeating-radial-gradient(circle at 12% 92%, transparent 0 60px, rgba(244,238,224,.045) 60px 62px),
+      radial-gradient(120% 130% at 80% 0%, #295238 0%, var(--green) 46%, #142b1e 100%);
+    color:#f3eede;
+    border-bottom:3px solid var(--gold);
+  }
+  .hero-in{max-width:var(--maxw);margin:0 auto;padding:72px 22px 64px;position:relative;z-index:2;}
+  .hero .kanji-flag{position:absolute;right:26px;top:34px;opacity:.5;z-index:1;}
+  .hero-eyebrow{color:var(--gold-soft);letter-spacing:.3em;}
+  .hero h1{
+    font-family:var(--serif);
+    font-weight:600;
+    font-optical-sizing:auto;
+    font-size:clamp(2.7rem,10.5vw,7.2rem);
+    line-height:.92;
+    letter-spacing:-.025em;
+    margin:.18em 0 .12em;
+    color:#f6f1e3;
+    overflow-wrap:break-word;
+  }
+  .hero h1 em{font-style:italic;font-weight:400;color:var(--gold-soft);}
+  .hero-sub{
+    font-size:clamp(1.02rem,2.4vw,1.28rem);
+    max-width:43ch;color:#e6dfcd;line-height:1.5;margin:0 0 26px;
+    font-weight:400;
+  }
+  .hero-sub b{color:#fff;font-weight:600;}
+  .meta-row{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{
+    font-family:var(--mono);font-size:12px;letter-spacing:.06em;font-weight:700;
+    padding:7px 12px;border-radius:999px;
+    border:1px solid rgba(244,238,224,.26);
+    color:#efe8d6;background:rgba(244,238,224,.07);
+    display:inline-flex;align-items:center;gap:7px;white-space:nowrap;
+  }
+  .chip b{color:#fff;}
+  .chip.accent{border-color:var(--gold);color:var(--gold-soft);}
+
+  /* ---------- section scaffolding ---------- */
+  section{padding:62px 0;}
+  .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:30px;border-bottom:1px solid var(--line);padding-bottom:16px;flex-wrap:wrap;}
+  .sec-head h2{
+    font-family:var(--serif);font-weight:600;letter-spacing:-.02em;
+    font-size:clamp(1.9rem,5vw,2.9rem);line-height:1;margin:.18em 0 0;color:var(--green);
+  }
+  .sec-head .tot{font-family:var(--mono);font-size:12.5px;letter-spacing:.1em;color:var(--ink-faint);text-align:right;}
+  .sec-head .tot b{color:var(--green);font-size:15px;}
+  .lead{max-width:62ch;color:var(--ink-soft);font-size:1.04rem;}
+  .lead b{color:var(--ink);font-weight:600;}
+  .danger-word{color:var(--flag);font-weight:600;}
+
+  /* ---------- the bag ---------- */
+  #bag{background:
+      linear-gradient(var(--paper-deep),var(--paper-deep));
+    border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);}
+  .bag-grid{display:grid;grid-template-columns:1fr;gap:34px;}
+  @media(min-width:880px){.bag-grid{grid-template-columns:1.15fr .85fr;gap:46px;align-items:start;}}
+  .bag-chart{display:flex;flex-direction:column;gap:7px;}
+  .bag-row{display:grid;grid-template-columns:50px minmax(0,1fr) 64px;align-items:center;gap:10px;}
+  .bag-row .club{font-family:var(--mono);font-weight:700;font-size:13px;color:var(--ink);text-align:right;}
+  .bag-row .track{height:15px;border-radius:4px;background:rgba(33,39,31,.07);position:relative;overflow:hidden;}
+  .bag-row .fill{position:absolute;inset:0 auto 0 0;width:var(--w,0);border-radius:4px;
+    background:linear-gradient(90deg,var(--green-2),var(--green));
+    animation:bagfill 1.05s cubic-bezier(.22,1,.36,1) both;}
+  @keyframes bagfill{from{width:0}to{width:var(--w,0)}}
+  .bag-row .carry{font-family:var(--mono);font-size:12.5px;color:var(--ink-soft);}
+  .bag-row.driver .fill{background:linear-gradient(90deg,var(--gold-soft),var(--gold));}
+  .bag-row.hl .club{color:var(--flag);}
+  .bag-gap{
+    display:flex;align-items:center;gap:10px;margin:3px 0 3px 66px;
+    font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--flag);font-weight:700;
+  }
+  .bag-gap .bar{flex:1;height:0;border-top:2px dashed rgba(155,43,34,.5);}
+  .bag-notes{display:flex;flex-direction:column;gap:18px;}
+  .note-card{background:var(--paper-lift);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow);}
+  .note-card h4{margin:0 0 6px;font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:700;}
+  .note-card p{margin:0;font-size:14.5px;color:var(--ink-soft);line-height:1.6;}
+  .note-card p b{color:var(--ink);font-weight:600;}
+  .note-card.flag{border-color:rgba(155,43,34,.32);background:linear-gradient(var(--flag-tint),var(--flag-tint)) padding-box;}
+  .note-card.flag h4{color:var(--flag);}
+
+  /* ---------- game plan ---------- */
+  .plan-grid{display:grid;grid-template-columns:1fr;gap:18px;}
+  @media(min-width:760px){.plan-grid{grid-template-columns:repeat(3,1fr);}}
+  .plan-card{background:var(--paper-lift);border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+  .plan-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;}
+  .plan-card.cash::before{background:var(--gold);}
+  .plan-card.survive::before{background:var(--moss);}
+  .plan-card.never::before{background:var(--flag);}
+  .plan-card h3{font-family:var(--serif);font-size:1.5rem;font-weight:600;margin:0 0 3px;color:var(--green);}
+  .plan-card .sub{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:14px;}
+  .plan-card ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px;}
+  .plan-card li{font-size:14px;color:var(--ink-soft);display:flex;gap:9px;line-height:1.45;}
+  .plan-card li .h{font-family:var(--mono);font-weight:700;color:var(--green);flex-shrink:0;min-width:2.4em;}
+  .plan-card.never li .h{color:var(--flag);}
+
+  /* ---------- hole cards ---------- */
+  .holes{display:grid;grid-template-columns:1fr;gap:18px;}
+  @media(min-width:760px){.holes{grid-template-columns:repeat(2,1fr);}}
+  .hole{
+    position:relative;background:var(--paper-lift);
+    border:1px solid var(--line);border-radius:18px;
+    padding:22px 22px 20px 26px;box-shadow:var(--shadow);
+    opacity:0;transform:translateY(22px);
+    transition:opacity .7s ease, transform .7s cubic-bezier(.22,1,.36,1), box-shadow .3s ease;
+  }
+  .hole.in{opacity:1;transform:none;}
+  .hole:hover{box-shadow:var(--shadow-lift);transform:translateY(-3px);}
+  .hole.in:hover{transform:translateY(-3px);}
+  .hole::before{content:"";position:absolute;left:0;top:18px;bottom:18px;width:6px;border-radius:0 6px 6px 0;}
+  .hole.par3::before{background:var(--moss);}
+  .hole.par4::before{background:var(--gold);}
+  .hole.par5::before{background:var(--forest);}
+  .hole.done{opacity:.5;}
+  .hole-top{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px;}
+  .num{
+    flex-shrink:0;width:50px;height:50px;border-radius:13px;border:none;cursor:pointer;
+    background:var(--green);color:#f3eede;font-family:var(--serif);font-weight:600;font-size:1.55rem;
+    display:flex;align-items:center;justify-content:center;line-height:1;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);transition:transform .15s ease, background .2s ease;
+  }
+  .num:hover{transform:scale(1.05);}
+  .num:active{transform:scale(.95);}
+  .hole.done .num{background:var(--moss);}
+  .hole.done .num::after{content:"✓";position:absolute;}
+  .hole.done .num span{display:none;}
+  .hole-id{flex:1;min-width:0;}
+  .hole-name{font-family:var(--serif);font-size:1.45rem;font-weight:600;letter-spacing:-.01em;line-height:1.05;color:var(--ink);margin:0;}
+  .hole-stats{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap;}
+  .stat{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.04em;padding:3px 8px;border-radius:6px;background:rgba(33,39,31,.07);color:var(--ink-soft);}
+  .stat b{color:var(--ink);}
+  .stat.si-hard{background:rgba(155,43,34,.12);color:var(--flag);}
+  .tag{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;padding:4px 9px;border-radius:999px;margin-bottom:14px;}
+  .tag.birdie{background:rgba(169,119,42,.15);color:var(--gold);}
+  .tag.survive{background:rgba(94,126,106,.18);color:#4a6957;}
+  .tag.par3{background:rgba(94,126,106,.16);color:#4a6957;}
+
+  .rows{display:flex;flex-direction:column;gap:11px;}
+  .row{display:grid;grid-template-columns:18px 1fr;gap:11px;align-items:start;}
+  .row .ic{margin-top:2px;flex-shrink:0;}
+  .row .label{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);display:block;margin-bottom:1px;}
+  .row p{margin:0;font-size:14.5px;line-height:1.5;color:var(--ink-soft);}
+  .row p b{color:var(--ink);font-weight:600;}
+  .row.miss .label{color:var(--flag);}
+
+  .clubs{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line-soft);}
+  .club-chip{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.03em;padding:5px 10px;border-radius:7px;border:1px solid var(--gold);color:var(--gold);background:rgba(169,119,42,.06);white-space:nowrap;}
+  .club-chip:first-child{background:var(--green);color:#f3eede;border-color:var(--green);}
+
+  .hole-note{margin-top:14px;display:flex;gap:9px;align-items:flex-start;background:var(--flag-tint);border:1px solid rgba(155,43,34,.28);border-radius:11px;padding:11px 13px;}
+  .hole-note p{margin:0;font-size:13px;line-height:1.45;color:#6e2a23;}
+  .hole-note p b{color:var(--flag);}
+  .hole-note .ic{flex-shrink:0;margin-top:1px;}
+
+  /* ---------- cheat / closing ---------- */
+  .closing{background:radial-gradient(120% 130% at 20% 0%, #295238 0%, var(--green) 50%, #142b1e 100%);color:#f3eede;border-top:3px solid var(--gold);}
+  .closing .wrap{padding-top:60px;padding-bottom:60px;}
+  .closing h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.8rem,5vw,2.6rem);color:#f6f1e3;margin:0 0 14px;letter-spacing:-.02em;}
+  .mantra{font-family:var(--serif);font-style:italic;font-size:clamp(1.25rem,3.4vw,1.7rem);line-height:1.45;max-width:30ch;color:#efe8d6;margin:0 0 28px;}
+  .mantra b{font-style:normal;color:var(--gold-soft);}
+  .src{font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;color:rgba(243,238,222,.7);line-height:1.9;}
+  .src a{color:var(--gold-soft);text-decoration:none;border-bottom:1px solid rgba(199,154,74,.4);}
+  .src a:hover{color:#fff;}
+  .credit{margin-top:26px;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:rgba(243,238,222,.45);}
+
+  @media (prefers-reduced-motion: reduce){
+    .hole{opacity:1;transform:none;transition:none;}
+    .bag-row .fill{animation:none;width:var(--w,0);}
+    html{scroll-behavior:auto;}
+  }
+  @media print{
+    .nav,.closing .src,.closing .credit{display:none;}
+    body{background:#fff;}
+    .hero{background:#fff;color:#000;border-bottom:2px solid #000;}
+    .hero h1,.hero-sub,.hero-eyebrow{color:#000;}
+    .hole{break-inside:avoid;opacity:1;transform:none;box-shadow:none;border:1px solid #999;}
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <div class="nav-brand"><span class="dot"></span> Bromborough GC · Back Tees</div>
+    <div class="nav-links">
+      <a href="#bag">The Bag</a>
+      <a href="#plan">Game Plan</a>
+      <a href="#front">Front</a>
+      <a href="#back">Back</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-in">
+    <svg class="kanji-flag" width="86" height="120" viewBox="0 0 86 120" fill="none" aria-hidden="true">
+      <line x1="14" y1="6" x2="14" y2="118" stroke="#c79a4a" stroke-width="3"/>
+      <path d="M14 10 L74 24 L14 42 Z" fill="#9b2b22"/>
+      <circle cx="14" cy="116" r="6" fill="#c79a4a"/>
+    </svg>
+    <div class="hero-eyebrow eyebrow">Course Strategy · Yardage Book</div>
+    <h1>Bromborough<br><em>Golf Club</em></h1>
+    <p class="hero-sub">Hole-by-hole game plan off the <b>back tees</b>, mapped to your carry yardages. The mission: a round near <b>level par</b> — kill the big numbers, cash the short holes.</p>
+    <div class="meta-row">
+      <span class="chip">PAR <b>72</b></span>
+      <span class="chip"><b>6,548</b> YDS</span>
+      <span class="chip">CR <b>72.9</b></span>
+      <span class="chip accent">SLOPE <b>142</b></span>
+      <span class="chip">PARKLAND · EST. 1903</span>
+      <span class="chip">WIRRAL</span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ===================== THE BAG ===================== -->
+<section id="bag">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow">Know your gaps</div>
+        <h2>The Bag</h2>
+      </div>
+      <div class="tot">CARRY DISTANCES<br><b>Driver → 58°</b></div>
+    </div>
+    <div class="bag-grid">
+      <div class="bag-chart" id="bagChart" aria-label="Carry distance per club"></div>
+      <div class="bag-notes">
+        <div class="note-card flag">
+          <h4>⚑ Your one blind spot</h4>
+          <p><b>7-iron (162) → 6-iron (185) is a 23-yard gap.</b> Anything needing <b>163–184 carry</b> is between clubs — it bites on the <b>6th</b> (173 par 3) and the <b>14th</b> (~167 approach). Decide now: smooth 6 or hard 7, and stick to it.</p>
+        </div>
+        <div class="note-card">
+          <h4>Carry vs. total</h4>
+          <p>These are <b>carry</b> numbers. On firm summer turf add roughly <b>+15–25 yds roll</b> off the tee. Into greens, carry is king — over every ravine and pond, <b>club for the carry</b>, not the number.</p>
+        </div>
+        <div class="note-card">
+          <h4>The course leans right</h4>
+          <p>OB or a penalty sits <b>right</b> on holes 1, 3 (long), 4, 9 and 18. If your miss is a push or fade, that's the shot that wrecks the card — manage it.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== GAME PLAN ===================== -->
+<section id="plan" style="background:var(--paper-deep);border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow">The big picture</div>
+        <h2>Game Plan</h2>
+      </div>
+    </div>
+    <p class="lead" style="margin-bottom:28px;">Slope 142 means Bromborough <b>punishes mistakes</b> more than it rewards heroics. Bank your score on the short holes, take the pars they give you on the brutes, and never flirt with the OB.</p>
+    <div class="plan-grid">
+      <div class="plan-card cash">
+        <h3>Cash In</h3>
+        <div class="sub">Birdie / red-figure holes</div>
+        <ul>
+          <li><span class="h">1·8</span> Short par 4s — position club, wedge in</li>
+          <li><span class="h">12·13</span> Drivable-ish 4s — leave the driver in the bag</li>
+          <li><span class="h">3·11</span> Gettable par 5s — lay up, attack with wedge</li>
+          <li><span class="h">17</span> Reachable 5 (GPS reads long — see note)</li>
+        </ul>
+      </div>
+      <div class="plan-card survive">
+        <h3>Survive</h3>
+        <div class="sub">Par is a great score</div>
+        <ul>
+          <li><span class="h">5</span> SI 1 — between two ponds, 429 yds</li>
+          <li><span class="h">15</span> SI 2 — ravine carry, uphill second</li>
+          <li><span class="h">2</span> SI 5 — long uphill par 4</li>
+          <li><span class="h">14·18</span> Long, tree-lined two-shotters</li>
+        </ul>
+      </div>
+      <div class="plan-card never">
+        <h3>Never</h3>
+        <div class="sub">The card-wreckers</div>
+        <ul>
+          <li><span class="h">1·4</span> Bail right — OB tee-to-green</li>
+          <li><span class="h">3</span> Go long — OB over the green</li>
+          <li><span class="h">9</span> Miss right — steep fall-off</li>
+          <li><span class="h">18</span> Anything right — bunker then OB</li>
+          <li><span class="h">1·12·13</span> Reach for driver on a position hole</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FRONT NINE ===================== -->
+<section id="front">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow">Holes 1 – 9</div>
+        <h2>The Front</h2>
+      </div>
+      <div class="tot">OUT<br><b>3,290 yds · Par 36</b></div>
+    </div>
+    <div class="holes" id="front-holes"></div>
+  </div>
+</section>
+
+<!-- ===================== BACK NINE ===================== -->
+<section id="back" style="background:var(--paper-deep);border-top:1px solid var(--line-soft);">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow">Holes 10 – 18 · the ravine run home</div>
+        <h2>The Back</h2>
+      </div>
+      <div class="tot">IN<br><b>3,258 yds · Par 36</b></div>
+    </div>
+    <div class="holes" id="back-holes"></div>
+  </div>
+</section>
+
+</main>
+
+<!-- ===================== CLOSING ===================== -->
+<section class="closing">
+  <div class="wrap">
+    <div class="eyebrow hero-eyebrow" style="color:var(--gold-soft);">Tee it up</div>
+    <h2>Play for the middle.</h2>
+    <p class="mantra">Position off the short tees, <b>carry every ravine with enough club</b>, miss to the fat side, and let the par 5s carry your card.</p>
+    <div class="src">
+      Sources ·
+      <a href="https://www.bromboroughgolfclub.org.uk/course/scorecard/">Official scorecard</a> ·
+      <a href="https://www.bromboroughgolfclub.org.uk/course/course_flyover/hole_1">Hole-by-hole flyover</a> ·
+      <a href="https://www.bromboroughgolfclub.org.uk/course/course_overview/">Course overview</a> ·
+      <a href="https://course.bluegolf.com/bluegolf/course/course/bromboroughgc/detailedscorecard.htm">BlueGolf database</a>
+    </div>
+    <div class="credit">Tap any hole number to mark it played · Built as a personal yardage book</div>
+  </div>
+</section>
+
+<script>
+/* ---------------- Data ---------------- */
+const BAG = [
+  {c:"58°", v:97,  l:"94–100"},
+  {c:"54°", v:108, l:"105–110"},
+  {c:"50°", v:117, l:"115–118"},
+  {c:"PW",  v:128, l:"128"},
+  {c:"9i",  v:142, l:"142"},
+  {c:"8i",  v:150, l:"150"},
+  {c:"7i",  v:162, l:"162", hl:true},
+  {c:"6i",  v:185, l:"185", hl:true, gapBefore:true},
+  {c:"5i",  v:195, l:"195"},
+  {c:"4i",  v:208, l:"208"},
+  {c:"3i",  v:220, l:"220"},
+  {c:"19°", v:220, l:"220"},
+  {c:"16°", v:245, l:"245"},
+  {c:"Driver", v:270, l:"265–275", driver:true}
+];
+
+const HOLES = [
+  {n:1,name:"The Road",par:4,yds:305,si:13,tag:["birdie","Position"],
+   tee:"Leave the driver in the bag. A <b>4-iron or 19°</b> to sit short of the cross bunker, favouring <b>left-centre</b>. Leaves a full wedge.",
+   miss:"<span class='danger-word'>OB runs the entire right side</span>, tee to green. Cross bunker waits in the fairway.",
+   in:"Short wedge to a <b>raised green</b>, long bunker left. Calm 4, look at birdie.",
+   clubs:["4i / 19°","Wedge"]},
+  {n:2,name:"The Burn",par:4,yds:423,si:5,tag:["survive","Survive · SI 5"],
+   tee:"<b>Driver, middle</b> — thread the fairway bunkers either side.",
+   miss:"Fairway bunkers <b>both sides</b>; the dip across the fairway is the ravine.",
+   in:"~140 left but <b>uphill — club up to the 8-iron</b>. Bunkered green; hit the middle.",
+   clubs:["Driver","8-iron"]},
+  {n:3,name:"Chalkley Woods",par:5,yds:516,si:7,tag:["birdie","Birdie 5"],
+   tee:"<b>Driver, centre-left</b>, started between the framing trees.",
+   miss:"<span class='danger-word'>OB over the back is the killer.</span> Cross bunker 35 yds short of the green.",
+   in:"Lay up with a <b>9-iron to ~90</b>, then wedge. <b>Never long.</b> Easy birdie the safe way.",
+   clubs:["Driver","9-iron","Wedge"]},
+  {n:4,name:"Copse Corner",par:3,yds:149,si:17,tag:["par3","Par 3"],
+   tee:"<b>8-iron (150 carry)</b> — clears the water, middle of green.",
+   miss:"<span class='danger-word'>OB right</span> · watery copse short · trees left · bunkers ring the green.",
+   in:"Commit to the carry. <b>Do not bail right.</b>",
+   clubs:["8-iron"]},
+  {n:5,name:"The Ridges",par:4,yds:429,si:1,tag:["survive","Hardest hole"],
+   tee:"<b>Driver between the two ponds</b>, aim left of the right-side bunker.",
+   miss:"Two ponds pinch the fairway; an <b>oak on the right</b> blocks the approach.",
+   in:"~145 → <b>9 / 8-iron</b>, favour the left side for the angle.",
+   clubs:["Driver","9-iron"],
+   note:"<b>SI 1.</b> Par is gold — bogey is no disaster. Take your 4 and run."},
+  {n:6,name:"Sandy Way",par:3,yds:173,si:15,tag:["par3","Gap-club par 3"],
+   tee:"<b>Smooth 6-iron</b> over the valley — 173 sits right in your 162–185 gap.",
+   miss:"<b>Three bunkers short</b> · water &amp; trees right · woods long.",
+   in:"Middle of green. Don't get cute.",
+   clubs:["6-iron"]},
+  {n:7,name:"Old Oak",par:5,yds:540,si:9,tag:["birdie","Three-shot 5"],
+   tee:"<b>Driver to middle-right</b> to open the dogleg-left corner.",
+   miss:"Trees both sides; two fairway bunkers sit in the lay-up zone.",
+   in:"Not reachable — <b>lay up short of the bunkers</b> to a full wedge, then attack.",
+   clubs:["Driver","Lay-up","Wedge"]},
+  {n:8,name:"Chimneys",par:4,yds:378,si:11,tag:["birdie","Birdie hole"],
+   tee:"<b>Driver (or 16°)</b> bisecting the fairway bunkers — leaves ~90.",
+   miss:"Greenside: 1 bunker right, <b>2 left</b>; trees left &amp; long.",
+   in:"Wedge, middle of green — <b>never long-left.</b>",
+   clubs:["Driver","Wedge"]},
+  {n:9,name:"Mere",par:4,yds:377,si:3,tag:["survive","Signature · SI 3"],
+   tee:"<b>Driver over the pond</b> to right-of-centre — left kills the angle.",
+   miss:"Pond off the tee · ravine fronting the green · <span class='danger-word'>steep fall-off right.</span>",
+   in:"Wedge — <b>carry the ravine fully</b>, favour left-centre.",
+   clubs:["Driver","Wedge"]},
+  {n:10,name:"Hassall's Gully",par:3,yds:153,si:16,tag:["par3","Par 3"],
+   tee:"<b>8-iron over the ravine</b> — leave it below the hole.",
+   miss:"Ravine short; green slopes hard <b>back-to-front</b>; any miss is trouble.",
+   in:"Carry the gully — <b>don't come up short.</b>",
+   clubs:["8-iron"]},
+  {n:11,name:"Ruin",par:5,yds:476,si:4,tag:["birdie","Tight birdie 5 · SI 4"],
+   tee:"Accuracy over power — <b>16° or hybrid to find the fairway</b>, not driver.",
+   miss:"Trees &amp; ditches both sides; <b>pond and hollow right.</b>",
+   in:"Lay up to a full wedge, <b>avoid the left trees</b> on the second. Birdie the safe way.",
+   clubs:["16° / hybrid","Wedge"]},
+  {n:12,name:"Moel Famau",par:4,yds:350,si:12,tag:["birdie","Position → birdie"],
+   tee:"<b>4 / 3-iron short of the left rough bunker (~230)</b>, away from the three right bunkers.",
+   miss:"Three bunkers right; a left rough bunker catches drives at ~230.",
+   in:"~120 wedge into a subtle <b>MacKenzie green</b> — respect the contours.",
+   clubs:["3 / 4-iron","Wedge"]},
+  {n:13,name:"Ravenscroft",par:4,yds:327,si:14,tag:["birdie","Position → birdie"],
+   tee:"<b>Hybrid / long iron</b> to the fairway — no driver needed.",
+   miss:"Trees &amp; drainage ditch right; <b>hedge left.</b>",
+   in:"~107 wedge. Clean birdie look.",
+   clubs:["Hybrid","Wedge"]},
+  {n:14,name:"Seagull's Watch",par:4,yds:452,si:8,tag:["survive","Survive · SI 8"],
+   tee:"<b>Driver, just right of the left bunker (~230).</b> Dogleg left.",
+   miss:"Trees both sides; <b>narrow green entrance</b>, bunkers each side.",
+   in:"~167 → <b>smooth 6-iron</b>, flighted to land soft. Gap-club hole again.",
+   clubs:["Driver","6-iron"]},
+  {n:15,name:"Poplars",par:4,yds:445,si:2,tag:["survive","2nd-hardest"],
+   tee:"<b>Driver carries the ravine (260) with no margin</b> — only if downwind/firm. Otherwise lay up with the <b>19° / 3-iron</b> short of it.",
+   miss:"Ravine + ditches ~260 off the tee; new <b>left fairway bunkers.</b>",
+   in:"Uphill to a big <b>elevated green — club up.</b> Bogey is fine; don't make double.",
+   clubs:["Driver / 19°","Long iron"],
+   note:"Recently changed: storms took the right trees, new bunkers added left. Play what you see."},
+  {n:16,name:"Raby Lodge",par:3,yds:154,si:18,tag:["par3","Par 3"],
+   tee:"<b>7-iron</b> — plays uphill, so 154 rides ~160+. Leave it below the hole.",
+   miss:"Bunkers around a heavily contoured green — <b>the slopes are the defence.</b>",
+   in:"Middle of green. Easiest index, fiddliest putt.",
+   clubs:["7-iron"]},
+  {n:17,name:"Leverhulme",par:5,yds:486,si:10,tag:["birdie","Birdie 5"],
+   tee:"<b>Club down off the tee</b> — long drives run into the ravine upslope.",
+   miss:"Fairway bunkers; <span class='danger-word'>new ditch short-LEFT of the green</span>; deep bunker right.",
+   in:"Lay up to a full wedge, stay out of the short-left ditch. Birdie the safe way.",
+   clubs:["3-wood","Lay-up","Wedge"],
+   note:"<b>Hole moved 60 yds forward</b> — your GPS/watch reads ~60 yds LONG. Trust the markers."},
+  {n:18,name:"Hard Approach",par:4,yds:415,si:6,tag:["survive","Hardest finish in the county"],
+   tee:"<b>Driver, dead centre</b> — both sides are tree trouble.",
+   miss:"<span class='danger-word'>Deep bunker full length right · OB just 10 yds right</span> · green angles away right.",
+   in:"~130 → <b>PW / 9-iron, aim LEFT-centre.</b> Right is dead.",
+   clubs:["Driver","PW / 9i"],
+   note:"Billed as the toughest finishing hole in the county. <b>Bogey is a good finish.</b>"}
+];
+
+/* ---------------- Icons ---------------- */
+const IC = {
+  tee:'<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="4" r="2.4" stroke="#5e7e6a" stroke-width="1.4"/><path d="M8 6.4V13M5.5 13h5" stroke="#5e7e6a" stroke-width="1.4" stroke-linecap="round"/></svg>',
+  miss:'<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2 L14.5 13.5 H1.5 Z" stroke="#9b2b22" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 6.5v3.2M8 11.6v.1" stroke="#9b2b22" stroke-width="1.5" stroke-linecap="round"/></svg>',
+  in:'<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 2v12" stroke="#a9772a" stroke-width="1.4" stroke-linecap="round"/><path d="M4 2.6 L12 5 L4 7.4 Z" fill="#a9772a"/></svg>',
+  note:'<svg width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.4" stroke="#9b2b22" stroke-width="1.3"/><path d="M8 4.6v4M8 10.8v.1" stroke="#9b2b22" stroke-width="1.5" stroke-linecap="round"/></svg>'
+};
+
+/* ---------------- Render bag chart ---------------- */
+const MAXV = 280;
+const chart = document.getElementById('bagChart');
+BAG.forEach(b=>{
+  if(b.gapBefore){
+    const g = document.createElement('div');
+    g.className = 'bag-gap';
+    g.innerHTML = '<span class="bar"></span>↕ 23-yd gap<span class="bar"></span>';
+    chart.appendChild(g);
+  }
+  const row = document.createElement('div');
+  row.className = 'bag-row' + (b.driver?' driver':'') + (b.hl?' hl':'');
+  row.innerHTML =
+    '<span class="club">'+b.c+'</span>'+
+    '<span class="track"><span class="fill" style="--w:'+(b.v/MAXV*100).toFixed(1)+'%"></span></span>'+
+    '<span class="carry">'+b.l+'</span>';
+  chart.appendChild(row);
+});
+
+/* ---------------- Render holes ---------------- */
+function holeCard(h){
+  const el = document.createElement('article');
+  el.className = 'hole par'+h.par;
+  el.id = 'hole-'+h.n;
+  const siHard = h.si<=4 ? ' si-hard' : '';
+  const clubs = h.clubs.map(c=>'<span class="club-chip">'+c+'</span>').join('');
+  const note = h.note ? '<div class="hole-note">'+IC.note+'<p>'+h.note+'</p></div>' : '';
+  el.innerHTML =
+    '<div class="hole-top">'+
+      '<button class="num" aria-pressed="false" aria-label="Mark hole '+h.n+' played"><span>'+h.n+'</span></button>'+
+      '<div class="hole-id">'+
+        '<h3 class="hole-name">'+h.name+'</h3>'+
+        '<div class="hole-stats">'+
+          '<span class="stat">PAR <b>'+h.par+'</b></span>'+
+          '<span class="stat"><b>'+h.yds+'</b> YDS</span>'+
+          '<span class="stat'+siHard+'">SI <b>'+h.si+'</b></span>'+
+        '</div>'+
+      '</div>'+
+    '</div>'+
+    '<span class="tag '+h.tag[0]+'">'+h.tag[1]+'</span>'+
+    '<div class="rows">'+
+      '<div class="row"><span class="ic">'+IC.tee+'</span><div><span class="label">Tee</span><p>'+h.tee+'</p></div></div>'+
+      '<div class="row miss"><span class="ic">'+IC.miss+'</span><div><span class="label">Miss</span><p>'+h.miss+'</p></div></div>'+
+      '<div class="row"><span class="ic">'+IC.in+'</span><div><span class="label">In</span><p>'+h.in+'</p></div></div>'+
+    '</div>'+
+    '<div class="clubs">'+clubs+'</div>'+
+    note;
+  return el;
+}
+const fr = document.getElementById('front-holes');
+const bk = document.getElementById('back-holes');
+HOLES.forEach(h=> (h.n<=9?fr:bk).appendChild(holeCard(h)) );
+
+/* ---------------- Played-state (localStorage) ---------------- */
+const KEY='brom-played';
+let played = {};
+try{ played = JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){}
+document.querySelectorAll('.hole').forEach(card=>{
+  const n = card.id.replace('hole-','');
+  const btn = card.querySelector('.num');
+  if(played[n]){ card.classList.add('done'); btn.setAttribute('aria-pressed','true'); }
+  btn.addEventListener('click', ()=>{
+    const on = card.classList.toggle('done');
+    btn.setAttribute('aria-pressed', on?'true':'false');
+    if(on){ played[n]=1; } else { delete played[n]; }
+    localStorage.setItem(KEY, JSON.stringify(played));
+  });
+});
+
+/* ---------------- Reveal on scroll + bag fill ---------------- */
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+  });
+},{threshold:.12, rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.hole').forEach((c,i)=>{
+  c.style.transitionDelay = (Math.min(i,5)*55)+'ms';
+  io.observe(c);
+});
+</script>
+</body>
+</html>
