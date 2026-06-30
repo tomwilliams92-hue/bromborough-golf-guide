@@ -322,8 +322,8 @@
       <div class="bag-chart" id="bagChart" aria-label="Carry distance per club"></div>
       <div class="bag-notes">
         <div class="note-card flag">
-          <h4>⚑ Your one blind spot</h4>
-          <p><b>7-iron (162) → 6-iron (185) is a 23-yard gap.</b> Anything needing <b>163–184 carry</b> is between clubs — it bites on the <b>6th</b> (173 par 3) and the <b>14th</b> (~167 approach). Decide now: smooth 6 or hard 7, and stick to it.</p>
+          <h4>⚑ Your tightest gap</h4>
+          <p><b>7-iron (167) → 6-iron (181) is a tidy 14-yard gap</b> — much healthier. The only in-between number on the card is the <b>6th</b> (173 over the valley) — take the 6-iron and swing easy. The <b>14th</b> (~167) is now a stock 7-iron.</p>
         </div>
         <div class="note-card">
           <h4>Carry vs. total</h4>
@@ -440,8 +440,8 @@ const BAG = [
   {c:"PW",  v:128, l:"128"},
   {c:"9i",  v:142, l:"142"},
   {c:"8i",  v:150, l:"150"},
-  {c:"7i",  v:162, l:"162", hl:true},
-  {c:"6i",  v:185, l:"185", hl:true, gapBefore:true},
+  {c:"7i",  v:167, l:"167", hl:true},
+  {c:"6i",  v:181, l:"181", hl:true, gapBefore:true},
   {c:"5i",  v:195, l:"195"},
   {c:"4i",  v:208, l:"208"},
   {c:"3i",  v:220, l:"220"},
@@ -478,7 +478,7 @@ const HOLES = [
    clubs:["Driver","9-iron"],
    note:"<b>SI 1.</b> Par is gold — bogey is no disaster. Take your 4 and run."},
   {n:6,name:"Sandy Way",par:3,yds:173,si:15,tag:["par3","Gap-club par 3"],
-   tee:"<b>Smooth 6-iron</b> over the valley — 173 sits right in your 162–185 gap.",
+   tee:"<b>Smooth 6-iron</b> over the valley — 173 sits just inside your 167–181 gap.",
    miss:"<b>Three bunkers short</b> · water &amp; trees right · woods long.",
    in:"Middle of green. Don't get cute.",
    clubs:["6-iron"]},
@@ -520,8 +520,8 @@ const HOLES = [
   {n:14,name:"Seagull's Watch",par:4,yds:452,si:8,tag:["survive","Survive · SI 8"],
    tee:"<b>Driver, just right of the left bunker (~230).</b> Dogleg left.",
    miss:"Trees both sides; <b>narrow green entrance</b>, bunkers each side.",
-   in:"~167 → <b>smooth 6-iron</b>, flighted to land soft. Gap-club hole again.",
-   clubs:["Driver","6-iron"]},
+   in:"~167 → <b>stock 7-iron</b>, right on the number. Flight it to hold the narrow entrance.",
+   clubs:["Driver","7-iron"]},
   {n:15,name:"Poplars",par:4,yds:445,si:2,tag:["survive","2nd-hardest"],
    tee:"<b>Driver carries the ravine (260) with no margin</b> — only if downwind/firm. Otherwise lay up with the <b>19° / 3-iron</b> short of it.",
    miss:"Ravine + ditches ~260 off the tee; new <b>left fairway bunkers.</b>",
@@ -562,7 +562,7 @@ BAG.forEach(b=>{
   if(b.gapBefore){
     const g = document.createElement('div');
     g.className = 'bag-gap';
-    g.innerHTML = '<span class="bar"></span>↕ 23-yd gap<span class="bar"></span>';
+    g.innerHTML = '<span class="bar"></span>↕ 14-yd gap<span class="bar"></span>';
     chart.appendChild(g);
   }
   const row = document.createElement('div');
